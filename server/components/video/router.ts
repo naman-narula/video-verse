@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-
+import linkRouter from './links/router';
 import { authenticateToken } from '../../middlewares/auth';
 import upload from '../../config/multer';
 import { validateSize, validateVideoDuration } from './validation';
@@ -9,7 +9,7 @@ import { insertVideo, getVideos } from './repository';
 
 const router = Router();
 
-
+router.use('/link', linkRouter);
 router.use(authenticateToken);
 
 router.get('/', async (req, res) => {
