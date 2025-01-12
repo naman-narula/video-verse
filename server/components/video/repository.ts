@@ -75,12 +75,12 @@ async function updateVideoJob(jobId:string,status:string):Promise<number> {
   });
 }
 
-async function getVideoJob(jobId:string): Promise<VideoJobModel>{
+async function getVideoJob(rowId:string): Promise<VideoJobModel>{
   return new Promise(async (resolve, reject) => {
     const db = await createOrGetDbConnection();
 
-    const stmt = db.prepare(`SELECT * FROM ${VIDEO_JOB_TABLENAME} where job_id = ?`);
-    stmt.get(jobId,
+    const stmt = db.prepare(`SELECT * FROM ${VIDEO_JOB_TABLENAME} where id = ?`);
+    stmt.get(rowId,
       function (err: Error, row: any) {
         if (err) {
           reject(err);

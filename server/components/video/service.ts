@@ -33,8 +33,7 @@ function prepareTrimJobData(video:VideoModel, startTime:string, duration:string)
 
 async function enqueueTrimJob(jobOptions:TrimJobData) {
   const job = await videoQueue.add("trim", jobOptions, { removeOnComplete: true, removeOnFail: true });
-  await insertVideoJob(job.id as string, jobOptions.outputPath, "pending");
-  return job;
+  return await insertVideoJob(job.id as string, jobOptions.outputPath, "pending");
 }
 
 
@@ -61,8 +60,8 @@ function prepareMergeJobData(inputVideoPaths:Array<string>, storedVideoPath:Arra
 
 async function enqueueMergeJob(jobData:MergeJobData){
   const job = await videoQueue.add("merge", jobData, { removeOnComplete: true, removeOnFail: true });
-  await insertVideoJob(job.id as string, jobData.outputPath, "pending");
-  return job;
+  return await insertVideoJob(job.id as string, jobData.outputPath, "pending");
+
 }
 
 export {createTrimJob ,createMergeJob,validateVideoOwnership};
