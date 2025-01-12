@@ -101,7 +101,7 @@ describe('Videoverse API End-to-End Tests', () => {
       .expect(400);
 
     expect(res.body.code).toBe(400);
-    expect(res.body.message).toBe('Video not found');
+    expect(res.body.message).toBe("\"id\" with value \"-1\" fails to match the required pattern: /^\\d+$/");
   });
 
   test('View Video - GET /video/link/:filename - invalid link', async () => {
@@ -140,7 +140,7 @@ describe('Videoverse API End-to-End Tests', () => {
     expect(res.body.data).toBeGreaterThan(0);
   });
 
-  test('Merge Videos - POST /video/trim -Video does not exists', async () => {
+  test('Trim Video - POST /video/trim -Video does not exists', async () => {
     const res = await request(app)
       .post(`/video/trim/-1`)
       .set('Authorization', `Bearer ${token}`)
@@ -150,8 +150,9 @@ describe('Videoverse API End-to-End Tests', () => {
       })
       .expect(400);
     expect(res.body.code).toBe(400);
-    expect(res.body.message).toBe('Video not found');
+    expect(res.body.message).toBe("\"id\" with value \"-1\" fails to match the required pattern: /^\\d+$/");
   });
+
   test('Merge Videos - POST /video/merge', async () => {
     const videosRes = await request(app)
       .get('/video')
@@ -176,7 +177,7 @@ describe('Videoverse API End-to-End Tests', () => {
       .expect(400);
 
     expect(res.body.code).toBe(400);
-    expect(res.body.message).toBe('Video not found ');
+    expect(res.body.message).toBe("\"videoIds[0]\" must be a positive number");
   });
 
   test('Get Processed Video - GET /video/processed/:jobId', async () => {
@@ -190,7 +191,7 @@ describe('Videoverse API End-to-End Tests', () => {
     const res = await request(app)
       .get(`/video/processed/-1`)
       .set('Authorization', `Bearer ${token}`)
-      .expect(500);
+      .expect(400);
   });
 
   let processedId: number;
