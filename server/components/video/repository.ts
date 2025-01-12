@@ -1,8 +1,8 @@
 import { RunResult } from 'sqlite3';
 import { createOrGetDbConnection } from '../../config/database';
-import {  VIDEO_TABLENAME } from '../../constants';
+import { VIDEO_JOB_TABLENAME, VIDEO_TABLENAME } from '../../constants';
 import type { VideoModel } from '../../@types/video';
-
+import { VideoJobModel } from '../../@types/job';
 
 async function insertVideo(userId: number, filepath: string): Promise<number> {
   return new Promise(async (resolve, reject) => {
@@ -41,5 +41,55 @@ async function getVideos(userId: number, videoIds?: Array<number>): Promise<Arra
   });
 }
 
+async function insertVideoJob(jobId:string,path:string,status:string):Promise<number> {
+  return new Promise(async (resolve, reject) => {
+    const db = await createOrGetDbConnection();
 
-export { insertVideo, getVideos};
+    const stmt = db.prepare(`INSERT INTO ${VIDEO_JOB_TABLENAME} (status,job_id,path) VALUES (?,?,?)`);
+    stmt.run([status, jobId,path],
+      function (this: RunResult, err: Error) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(this.lastID);
+        }
+      }
+    );
+  });
+}
+
+async function updateVideoJob(jobId:string,status:string):Promise<number> {
+  return new Promise(async (resolve, reject) => {
+    const db = await createOrGetDbConnection();
+
+    const stmt = db.prepare(`UPDATE ${VIDEO_JOB_TABLENAME} SET status = ? WHERE job_id = ?`);
+    stmt.run([status,jobId],
+      function (this: RunResult, err: Error) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(this.lastID);
+        }
+      }
+    );
+  });
+}
+
+async function getVideoJob(jobId:string): Promise<VideoJobModel>{
+  return new Promise(async (resolve, reject) => {
+    const db = await createOrGetDbConnection();
+
+    const stmt = db.prepare(`SELECT * FROM ${VIDEO_JOB_TABLENAME} where job_id = ?`);
+    stmt.get(jobId,
+      function (err: Error, row: any) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(row);
+        }
+      }
+    );
+  });
+}
+
+export { insertVideo, getVideos,insertVideoJob,getVideoJob,updateVideoJob};

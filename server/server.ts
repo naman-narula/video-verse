@@ -2,7 +2,9 @@ import 'dotenv/config';
 import express, { NextFunction, Request, Response } from 'express';
 import userRouter from './components/user/router';
 import videoRouter from './components/video/router';
+import initBullWorker from './worker/init';
 import { createOrGetDbConnection, createTable } from './config/database';
+import videoQueue from './queue/video-queue';
 const app = express();
 let PORT = process.env.PORT || 3000;
 
@@ -15,6 +17,8 @@ app.use((err:Error, req:Request, res:Response, next:NextFunction) => {
 });
 
 async function startServer() {
+  videoQueue.drain();
+  const bullmqWorker = initBullWorker();
   const db = await createOrGetDbConnection();
   createTable(db);
   app.listen(PORT, () => {

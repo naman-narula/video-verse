@@ -4,8 +4,9 @@ import linkRouter from './links/router';
 import { authenticateToken } from '../../middlewares/auth';
 import upload from '../../config/multer';
 import { validateSize, validateVideoDuration } from './validation';
-import { insertVideo, getVideos } from './repository';
-
+import { insertVideo, getVideos, getVideoJob } from './repository';
+import { createMergeJob, createTrimJob } from './service';
+import { VideoNotFoundError } from '../../utils/error';
 
 const router = Router();
 
@@ -34,5 +35,47 @@ router.post('/upload', upload.single('video'), async (req, res, next) => {
   }
 });
 
+router.post('/trim/:id', async (req, res) => {
+  try {
+    const { startTime, duration } = req.body;
+    const job = await createTrimJob(req.user.userId, Number.parseInt(req.params.id), startTime, duration)
+    res.status(200).json(job.id);
+  } catch (error) {
+    if (error instanceof VideoNotFoundError) {
+      res.status(error.code).json(error.message)
+    }
+    console.error(error);
+  }
+});
+
+router.post('/merge/', async (req, res) => {
+  try {
+    const { videoIds } = req.body;
+    const job = await createMergeJob(req.user.userId, videoIds);
+    res.status(200).json(job.id);
+  } catch (error) {
+    if (error instanceof VideoNotFoundError) {
+      res.status(error.code).json(error.message)
+    }
+    console.error(error);
+  }
+})
+
+router.get('/processed/:jobId', async (req, res, next) => {
+  const jobId = req.params.jobId;
+  try {
+    const result = await getVideoJob(jobId);
+    if (result.status === "completed") {
+      res.sendFile(result.path);
+    }
+    else {
+      res.status(200).json(result.status);
+    }
+  }
+  catch (err) {
+    next(err);
+  }
+
+})
 
 export default router;

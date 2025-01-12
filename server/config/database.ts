@@ -28,6 +28,9 @@ function createTable(dbInstance: Database) {
       `CREATE TABLE IF NOT EXISTS ${VIDEO_TABLENAME}  (id INTEGER PRIMARY KEY AUTOINCREMENT, path TEXT, user_id INTEGER, FOREIGN KEY(user_id) REFERENCES users(id))`
     );
 
+    dbInstance.run(
+      `CREATE TABLE IF NOT EXISTS ${VIDEO_JOB_TABLENAME} (id INTEGER PRIMARY KEY AUTOINCREMENT, status TEXT, job_id TEXT, path TEXT )`
+    );
   });
 }
 
