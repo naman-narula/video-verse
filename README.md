@@ -28,10 +28,10 @@ Before starting, ensure you have the following installed on your machine:
 
 Recommended OS **Ubuntu 22.04 LTS**
 
-- Node.js: Download and install Node.js from [here](https://nodejs.org/en)
+- Node.js: Download and install Node.js from [here](https://nodejs.org/en) LTS version v22.13.0
 - Make sure that **ffmpeg** and **ffprobe** are installed on your system. On Linux, they are typically pre-installed. You can verify their installation by opening the command prompt and typing ffmpeg and ffprobe. If not installed download from [here](https://www.ffmpeg.org/download.html) and add to your path.
 - Also make sure Redis is installed. Download community edition from this page 
-https://redis.io/downloads/
+https://redis.io/downloads/. Download version 7.4
 
 -  Git version control https://git-scm.com/downloads
 
@@ -52,3 +52,6 @@ Run the follwing command on terminal
    
 ### For checking coverage of tests
 - npm run coverage
+
+
+#### Link to postman collection [Postman collection](./videoverse.postman_collection.json)
