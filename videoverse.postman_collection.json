@@ -1,0 +1,316 @@
+{
+	"info": {
+		"_postman_id": "7499d753-b90c-43ad-ab7f-6a628327211e",
+		"name": "videoverse Copy",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16100511"
+	},
+	"item": [
+		{
+			"name": "Signup",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\":\"naman\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/user/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"user",
+						"signup"
+					]
+				},
+				"description": "The `POST /user/signup` endpoint is used to sign up a new user. It expects a JSON payload in the request body with a `username` field.\n\n### Request Body\n\n- `username` (string, required): The username of the new user.\n    \n\n### Response\n\nThe response of this request is a JSON schema representing the structure of the response data. The specific structure of the response will depend on the server implementation and may include fields such as `userId`, `message`, or `token`. The actual response data will conform to the JSON schema provided by the server.\n\nExample JSON schema:\n\n``` json\n{\n    \"code\": 200,\n    \"message\": \"\",\n    \"data\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTczNjY2NDUxN30.uDOI4LrzDky4mlF490UGkzGEieKE6ZG0qakZf_jGpsg\"\n}\n\n ```"
+			},
+			"response": []
+		},
+		{
+			"name": "Upload File",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "video",
+							"type": "file",
+							"src": "postman-cloud:///1efd0b0a-6040-4ec0-b359-4906caab9eb8"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/video/upload",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"video",
+						"upload"
+					]
+				},
+				"description": "### Request\n\nThe `POST /video/upload` endpoint is used to upload a video. The request should be sent as a form-data type with the video file as the payload.\n\n#### Request Body\n\n- `videoFile` (file): The video file to be uploaded.\n    \n\n#### Request Headers\n\n- Content-Type: `multipart/form-data`\n    \n\n### Response\n\n#### Status Code\n\n- 201: Created\n    \n\nThe response of this request is a JSON schema describing the structure of the response data.\n\n### Request Body\n\n- `video`: (file) The video file to be uploaded.\n    \n\n### Response\n\nThe response of this request is a JSON object with the following properties:\n\n- `code`: The status code of the response.\n    \n- `message`: A message related to the response.\n    \n- `data`: Indicates whether the video upload was successful (true) or not (false)."
+			},
+			"response": []
+		},
+		{
+			"name": "Get Videos",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/video",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"video"
+					]
+				},
+				"description": "The `GET` request retrieves a list of videos from the server. The response is in JSON format and has a status code of 200. The response body follows the JSON schema below:\n\n``` json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"code\": {\n      \"type\": \"number\"\n    },\n    \"message\": {\n      \"type\": \"string\"\n    },\n    \"data\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"id\": {\n            \"type\": \"number\"\n          },\n          \"path\": {\n            \"type\": \"string\"\n          },\n          \"user_id\": {\n            \"type\": \"number\"\n          }\n        }\n      }\n    }\n  }\n}\n\n ```"
+			},
+			"response": []
+		},
+		{
+			"name": "Generate Link",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/video/link/generate/:id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"video",
+						"link",
+						"generate",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "3"
+						}
+					]
+				},
+				"description": "# Video Link Generation\n\nThis endpoint triggers an HTTP GET request to generate a video link based on the provided ID.\n\n### Request Parameters\n\n- `id` (path parameter): The ID for which the video link needs to be generated.\n    \n\n### Response\n\n- Status: 200\n    \n- Content-Type: application/json\n    \n\n#### Response Body\n\n- `code`: The status code for the response.\n    \n- `message`: Any additional message related to the response.\n    \n- `data`: The generated video link."
+			},
+			"response": []
+		},
+		{
+			"name": "Trim Video",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"startTime\": \"00:00:02\",\n    \"duration\": \"00:00:04\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/video/trim/:id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"video",
+						"trim",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "3"
+						}
+					]
+				},
+				"description": "### Trim Video\n\nThis endpoint is used to trim a video based on the provided start time and duration.\n\n#### Request\n\n- Method: POST\n    \n- URL: `http://localhost:3000/video/trim/:id`\n    \n- Headers:\n    \n    - Content-Type: application/json\n        \n- Body:\n    \n    - startTime (string, required): The start time for trimming the video in the format \"HH:MM:SS\".\n        \n    - duration (string, required): The duration for trimming the video in the format \"HH:MM:SS\".\n        \n\n#### Response\n\n- Status: 201\n    \n- Headers:\n    \n    - Content-Type: application/json\n        \n- { \"code\": 0, \"message\": \"\", \"data\": 0 }\n    \n- { \"type\": \"object\", \"properties\": { \"code\": { \"type\": \"number\" }, \"message\": { \"type\": \"string\" }, \"data\": { \"type\": \"number\" } } }\n    \n- Returns the job id in data field that can be queried later for results"
+			},
+			"response": []
+		},
+		{
+			"name": "Merge Videos",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"videoIds\":[1,2]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/video/merge",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"video",
+						"merge"
+					]
+				},
+				"description": "The `POST /video/merge` endpoint is used to merge multiple videos into a single video.\n\n### Request Body\n\n- `videoIds` (array of integers) - An array containing the IDs of the videos to be merged.\n    \n\n### Response\n\nThe response is a JSON object with the following schema:\n\n``` json\n{\n    \"type\": \"number\"\n}\n\n ```\n\nThe response contains a single number, which represents the ID of the merged video."
+			},
+			"response": []
+		},
+		{
+			"name": "Get Processed Video",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/video/processed/:jobId",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"video",
+						"processed",
+						":jobId"
+					],
+					"variable": [
+						{
+							"key": "jobId",
+							"value": "3"
+						}
+					]
+				},
+				"description": "### GET /video/processed/:jobId\n\nThis endpoint retrieves the processed video corresponding to the specified job ID.\n\n#### Request\n\nNo request body parameters are required for this endpoint.\n\n- `jobId` (path parameter) - The ID of the job for which the processed video is being retrieved.\n    \n\n#### Response\n\nThe response for this request is a processed video in the form of a JSON schema.\n\n- `Status: 200`\n    \n- `Content-Type: video/mp4`"
+			},
+			"response": []
+		},
+		{
+			"name": "View Generated Link",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/video/link/video-1736662650181-858027235.mp4?expires=1736664150&signature=5e4b503d4f9ceb7f72de3cfd44847f62292857305dfa2b91df392c03606f33f4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"video",
+						"link",
+						"video-1736662650181-858027235.mp4"
+					],
+					"query": [
+						{
+							"key": "expires",
+							"value": "1736664150"
+						},
+						{
+							"key": "signature",
+							"value": "5e4b503d4f9ceb7f72de3cfd44847f62292857305dfa2b91df392c03606f33f4"
+						}
+					]
+				},
+				"description": "This endpoint sends an HTTP GET request to retrieve the video file with the specified link. The request URL contains the video file link, along with query parameters for expiration and signature.\n\nThe response of this request can be documented as a JSON schema."
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MzY1NzcwNjh9.wX92TUtKcryQzlAqaufFPQscxQTtbM3qpWLOBY9lNNw"
+		}
+	]
+}
