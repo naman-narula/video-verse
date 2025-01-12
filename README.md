@@ -55,3 +55,36 @@ Run the follwing command on terminal
 
 
 #### Link to postman collection [Postman collection](./videoverse.postman_collection.json)
+
+### Explanations
+
+Below Endpoints are straight forward
+
+- /user/signup - POST
+- /video/upload - POST
+- /video - GET
+
+/video/link/generate/:id - GET
+
+uses crypto module of node js to hash the expiry and filename to generate a signature . That signature is validated when someone visits the link.
+
+
+/video/trim/:id - POST
+
+/video/merge - POST
+
+Both sumbit the jobs of video processing. Since this process could be time consuming . The API returns and ID which can be queried at later time using a different endpoint
+
+/video/processed/:jobId - GET
+
+Endpoint is used to return the result of merge or trim operation. This only returns the video if the processing is completed
+
+
+## Assumptions
+
+- I have assumed that video during trim or merge operations we will not return the video processing response immediately. Becuase it can take some time . Instead It is pushed to a message Queue for processing.
+
+
+- Also assumed that if there is a frontend it would store the returned id(trim job, merge job), If not we can store the processed video id corresponding to a user(NOT IMPLEMENTED).
+
+- Assumed video to be of .mp4 formats only for simplicity.
