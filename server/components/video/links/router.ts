@@ -5,12 +5,15 @@ import { generateLink, verifyLink } from './link-utils';
 import { validateVideoOwnership } from '../service';
 import prepareResponse from '../../../utils/response';
 import { VideoNotFoundError } from '../../../utils/error';
+import { validateRequest,validateParams } from '../../../middlewares/validation';
+import idFileParamSchema from './joi-validation';
+import { idParamSchema } from '../../../utils/joi-validation';
 
 const router = Router();
 
 const filesDirectory = path.join(process.cwd(), 'uploads');
 
-router.get('/:filename', (req, res) => {
+router.get('/:filename', validateParams(idFileParamSchema), (req, res) => {
   const { filename } = req.params;
   const { expires, signature } = req.query;
   const isLinkValid = verifyLink(filename, expires as string, signature as string);
@@ -26,7 +29,7 @@ router.get('/:filename', (req, res) => {
   });
 });
 
-router.get('/generate/:id', authenticateToken, async (req, res) => {
+router.get('/generate/:id', validateParams(idParamSchema), authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
     const result = await validateVideoOwnership(req.user.userId, Number.parseInt(id));

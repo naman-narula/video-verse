@@ -8,6 +8,9 @@ import { insertVideo, getVideos, getVideoJob } from './repository';
 import { createMergeJob, createTrimJob } from './service';
 import { VideoNotFoundError } from '../../utils/error';
 import prepareResponse from '../../utils/response';
+import { mergeRequestSchema, trimRequestSchema } from './joi-validation';
+import { validateRequest,validateParams } from '../../middlewares/validation';
+import { idParamSchema } from '../../utils/joi-validation';
 
 const router = Router();
 
@@ -36,7 +39,7 @@ router.post('/upload', upload.single('video'), async (req, res, next) => {
   }
 });
 
-router.post('/trim/:id', async (req, res) => {
+router.post('/trim/:id', validateRequest(trimRequestSchema), validateParams(idParamSchema), async (req, res) => {
   try {
     const { startTime, duration } = req.body;
     const id = await createTrimJob(req.user.userId, Number.parseInt(req.params.id), startTime, duration)
@@ -49,7 +52,7 @@ router.post('/trim/:id', async (req, res) => {
   }
 });
 
-router.post('/merge/', async (req, res) => {
+router.post('/merge/', validateRequest(mergeRequestSchema), async (req, res) => {
   try {
     const { videoIds } = req.body;
     const id = await createMergeJob(req.user.userId, videoIds);
@@ -62,8 +65,8 @@ router.post('/merge/', async (req, res) => {
   }
 })
 
-router.get('/processed/:jobId', async (req, res, next) => {
-  const jobId = req.params.jobId;
+router.get('/processed/:id', validateParams(idParamSchema), async (req, res, next) => {
+  const jobId = req.params.id;
   try {
     const result = await getVideoJob(jobId);
     if (result.status === "completed") {

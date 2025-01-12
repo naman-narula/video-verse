@@ -2,10 +2,12 @@ import { Router } from 'express';
 import { generateAccessToken } from '../../middlewares/auth';
 import { insertUser } from './repository';
 import prepareResponse from '../../utils/response';
+import signupSchema from './joi-validation';
+import { validateRequest } from '../../middlewares/validation';
 
 const router = Router();
 
-router.post('/signup', async (req, res, next) => {
+router.post('/signup', validateRequest(signupSchema), async (req, res, next) => {
     try {
         const userId = await insertUser(req.body.username);
         const token = generateAccessToken(userId, req.body.username);
