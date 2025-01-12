@@ -29,7 +29,7 @@ router.post('/upload', upload.single('video'), async (req, res, next) => {
     if (result === true) {
       await insertVideo(req.user.userId, req.file!.filename);
     }
-    res.status(201).json(prepareResponse(201,"",result));
+    res.status(201).json(prepareResponse(201,"Video uploaded successfully",result));
   }
   catch (err) {
     next(err);
@@ -40,7 +40,7 @@ router.post('/trim/:id', async (req, res) => {
   try {
     const { startTime, duration } = req.body;
     const id = await createTrimJob(req.user.userId, Number.parseInt(req.params.id), startTime, duration)
-    res.status(201).json(prepareResponse(201,"",id));
+    res.status(202).json(prepareResponse(202,"",id));
   } catch (error) {
     if (error instanceof VideoNotFoundError) {
       res.status(error.code).json(prepareResponse(error.code,error.message))
@@ -53,7 +53,7 @@ router.post('/merge/', async (req, res) => {
   try {
     const { videoIds } = req.body;
     const id = await createMergeJob(req.user.userId, videoIds);
-    res.status(200).json(prepareResponse(id));
+    res.status(202).json(prepareResponse(202,"Videos merged successfully",id));
   } catch (error) {
     if (error instanceof VideoNotFoundError) {
       res.status(error.code).json(prepareResponse(error.code,error.message))
