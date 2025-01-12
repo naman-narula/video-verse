@@ -26,9 +26,11 @@ async function getVideos(userId: number, videoIds?: Array<number>): Promise<Arra
     const db = await createOrGetDbConnection();
     let stmt;
     if (videoIds) {
-      stmt = db.prepare(`SELECT * FROM ${VIDEO_TABLENAME} WHERE user_id = ? and id IN (${videoIds.toString()})`);
+      stmt = db.prepare(`SELECT * FROM ${VIDEO_TABLENAME} WHERE user_id = ? AND id IN (${videoIds.toString()})`);
     }
-    stmt = db.prepare(`SELECT * FROM ${VIDEO_TABLENAME} WHERE user_id = ?`);
+    else {
+      stmt = db.prepare(`SELECT * FROM ${VIDEO_TABLENAME} WHERE user_id = ?`);
+    }
     stmt.all(userId,
       function (err: Error, row: Array<VideoModel>) {
         if (err) {
