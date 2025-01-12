@@ -53,7 +53,7 @@ router.post('/merge/', async (req, res) => {
   try {
     const { videoIds } = req.body;
     const id = await createMergeJob(req.user.userId, videoIds);
-    res.status(200).json(id);
+    res.status(200).json(prepareResponse(id));
   } catch (error) {
     if (error instanceof VideoNotFoundError) {
       res.status(error.code).json(prepareResponse(error.code,error.message))
