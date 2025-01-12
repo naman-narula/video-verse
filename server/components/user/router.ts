@@ -8,7 +8,7 @@ const router = Router();
 router.post('/signup', async (req, res, next) => {
     try {
         const userId = await insertUser(req.body.username);
-        const token = generateAccessToken(userId);
+        const token = generateAccessToken(userId,req.body.username);
         res.status(200).json(prepareResponse(200,"",token));
     }
     catch (err) {

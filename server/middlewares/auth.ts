@@ -2,8 +2,8 @@ import type { NextFunction,Request,Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { userExists } from '../components/user/repository';
 
-export function generateAccessToken(userId:number) {
-  return jwt.sign({userId}, process.env.TOKEN);
+export function generateAccessToken(userId:number,username:string) {
+  return jwt.sign({userId,username}, process.env.TOKEN);
 }
 
 export function authenticateToken(req:Request, res:Response, next:NextFunction) : void{
