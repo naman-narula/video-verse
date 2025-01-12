@@ -33,4 +33,4 @@ function verifyLink(filename: string, expires: string, signature: string): boole
   return true;
 }
 
-export  {generateLink,verifyLink};
+export { generateLink, verifyLink };

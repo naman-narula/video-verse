@@ -9,7 +9,7 @@ async function insertUser(username: string): Promise<number> {
 
     const stmt = db.prepare(`INSERT INTO ${USER_TABLENAME} (username) VALUES (?)`);
     stmt.run(username,
-      function (this:RunResult,err: Error) {
+      function (this: RunResult, err: Error) {
         if (err) {
           reject(err);
         } else {
@@ -25,7 +25,7 @@ async function userExists(userId: number): Promise<UserModel> {
 
     const stmt = db.prepare(`SELECT * FROM ${USER_TABLENAME} WHERE id = ?`);
     stmt.get(userId,
-      function (err: Error, row:UserModel) {
+      function (err: Error, row: UserModel) {
         if (err) {
           reject(err);
         } else {
@@ -37,4 +37,4 @@ async function userExists(userId: number): Promise<UserModel> {
 }
 
 
-export { insertUser,userExists };
+export { insertUser, userExists };

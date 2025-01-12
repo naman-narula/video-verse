@@ -41,12 +41,12 @@ async function getVideos(userId: number, videoIds?: Array<number>): Promise<Arra
   });
 }
 
-async function insertVideoJob(jobId:string,path:string,status:string):Promise<number> {
+async function insertVideoJob(jobId: string, path: string, status: string): Promise<number> {
   return new Promise(async (resolve, reject) => {
     const db = await createOrGetDbConnection();
 
     const stmt = db.prepare(`INSERT INTO ${VIDEO_JOB_TABLENAME} (status,job_id,path) VALUES (?,?,?)`);
-    stmt.run([status, jobId,path],
+    stmt.run([status, jobId, path],
       function (this: RunResult, err: Error) {
         if (err) {
           reject(err);
@@ -58,12 +58,12 @@ async function insertVideoJob(jobId:string,path:string,status:string):Promise<nu
   });
 }
 
-async function updateVideoJob(jobId:string,status:string):Promise<number> {
+async function updateVideoJob(jobId: string, status: string): Promise<number> {
   return new Promise(async (resolve, reject) => {
     const db = await createOrGetDbConnection();
 
     const stmt = db.prepare(`UPDATE ${VIDEO_JOB_TABLENAME} SET status = ? WHERE job_id = ?`);
-    stmt.run([status,jobId],
+    stmt.run([status, jobId],
       function (this: RunResult, err: Error) {
         if (err) {
           reject(err);
@@ -75,7 +75,7 @@ async function updateVideoJob(jobId:string,status:string):Promise<number> {
   });
 }
 
-async function getVideoJob(rowId:string): Promise<VideoJobModel>{
+async function getVideoJob(rowId: string): Promise<VideoJobModel> {
   return new Promise(async (resolve, reject) => {
     const db = await createOrGetDbConnection();
 
@@ -92,4 +92,4 @@ async function getVideoJob(rowId:string): Promise<VideoJobModel>{
   });
 }
 
-export { insertVideo, getVideos,insertVideoJob,getVideoJob,updateVideoJob};
+export { insertVideo, getVideos, insertVideoJob, getVideoJob, updateVideoJob };

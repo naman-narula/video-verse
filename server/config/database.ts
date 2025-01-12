@@ -34,4 +34,4 @@ function createTable(dbInstance: Database) {
   });
 }
 
-export { createOrGetDbConnection , createTable };
+export { createOrGetDbConnection, createTable };

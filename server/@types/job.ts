@@ -13,8 +13,8 @@ export interface TrimJob extends Job {
 }
 
 export type MergeJobData = {
-    videoPaths:Array<string>, 
-    outputPath:string,
+    videoPaths: Array<string>,
+    outputPath: string,
     type: 'merge'
 }
 
@@ -23,8 +23,8 @@ export interface MergeJob extends Job {
 }
 
 export type VideoJobModel = {
-    id:number,
-    status:"completed" | "pending",
-    job_id:string,
-    path:string,
+    id: number,
+    status: "completed" | "pending",
+    job_id: string,
+    path: string,
 }

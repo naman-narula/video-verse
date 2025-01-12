@@ -5,20 +5,22 @@ import videoRouter from './components/video/router';
 import initBullWorker from './worker/init';
 import { createOrGetDbConnection, createTable } from './config/database';
 import videoQueue from './queue/video-queue';
+import type { Worker } from 'bullmq';
+
 const app = express();
 let PORT = process.env.PORT || 3000;
-
+let bullmqWorker: Worker;
 app.use(express.json());
 app.use('/user', userRouter);
 app.use('/video', videoRouter);
-app.use((err:Error, req:Request, res:Response, next:NextFunction) => {
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(err);
   res.status(500).send('Internal Server Error');
 });
 
 async function startServer() {
   videoQueue.drain();
-  const bullmqWorker = initBullWorker();
+  bullmqWorker = initBullWorker();
   const db = await createOrGetDbConnection();
   createTable(db);
   app.listen(PORT, () => {
@@ -26,6 +28,16 @@ async function startServer() {
   });
 }
 
+process.on('SIGTERM', async () => {
+  await closeServer();
+})
+
+
 startServer();
+
+export async function closeServer() {
+  await videoQueue.close();
+  await bullmqWorker.close();
+}
 
 export default app;
