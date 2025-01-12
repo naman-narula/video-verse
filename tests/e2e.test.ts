@@ -47,18 +47,18 @@ describe('Videoverse API End-to-End Tests', () => {
     const res = await request(app)
       .post('/video/upload')
       .set('Authorization', `Bearer ${token}`)
-      .attach('video', path.resolve(__dirname, 'small.mp4')) // Replace with actual file path
+      .attach('video', path.resolve(__dirname, 'small.mp4'))
       .expect(201);
 
     await request(app)
       .post('/video/upload')
       .set('Authorization', `Bearer ${token}`)
-      .attach('video', path.resolve(__dirname, 'small.mp4')) // Replace with actual file path
+      .attach('video', path.resolve(__dirname, 'small.mp4'))
       .expect(201);
 
     expect(res.body.code).toBe(201);
     expect(res.body.message).toBe('Video uploaded successfully');
-    expect(res.body.data).toBe(true); // true if upload succeeded
+    expect(res.body.data).toBe(true);
   });
 
   test('Get Videos - GET /video', async () => {
@@ -94,13 +94,40 @@ describe('Videoverse API End-to-End Tests', () => {
     expect(res.body.data).toHaveProperty('link');
   });
 
+  test('Generate Link - GET /video/link/generate/:id video does not exists', async () => {
+    const res = await request(app)
+      .get(`/video/link/generate/-1`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(400);
+
+    expect(res.body.code).toBe(400);
+    expect(res.body.message).toBe('Video not found');
+  });
+
+  test('View Video - GET /video/link/:filename - invalid link', async () => {
+    const videosRes = await request(app)
+      .get('/video')
+      .set('Authorization', `Bearer ${token}`)
+    const validres = await request(app)
+      .get(`/video/link/generate/${videosRes.body.data[0].id}`)
+      .set('Authorization', `Bearer ${token}`)
+    const invalidLink = validres.body.data.substring(0, validres.body.data.length - 1) + "1";
+    console.log(invalidLink);
+    const res = await request('')
+      .get(invalidLink)
+      .expect(403);
+
+    expect(res.body.code).toBe(403);
+    expect(res.body.message).toBe("Invalid link");
+  });
+
   test('Trim Video - POST /video/trim/:id', async () => {
     const videosRes = await request(app)
       .get('/video')
       .set('Authorization', `Bearer ${token}`)
 
     const res = await request(app)
-      .post(`/video/trim/${videosRes.body.data[0].id}`) // Replace with an actual video ID
+      .post(`/video/trim/${videosRes.body.data[0].id}`)
       .set('Authorization', `Bearer ${token}`)
       .send({
         startTime: '00:00:02',
@@ -110,7 +137,20 @@ describe('Videoverse API End-to-End Tests', () => {
     processedId = res.body.data;
     expect(res.body.code).toBe(202);
     expect(res.body.message).toBe('');
-    expect(res.body.data).toBeGreaterThan(0); // Assuming job id is 0 for now
+    expect(res.body.data).toBeGreaterThan(0);
+  });
+
+  test('Merge Videos - POST /video/trim -Video does not exists', async () => {
+    const res = await request(app)
+      .post(`/video/trim/-1`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        startTime: '00:00:02',
+        duration: '00:00:04'
+      })
+      .expect(400);
+    expect(res.body.code).toBe(400);
+    expect(res.body.message).toBe('Video not found');
   });
   test('Merge Videos - POST /video/merge', async () => {
     const videosRes = await request(app)
@@ -128,11 +168,29 @@ describe('Videoverse API End-to-End Tests', () => {
     expect(res.body.data).toBeGreaterThan(0);
   });
 
+  test('Merge Videos - POST /video/merge -Video does not exists', async () => {
+    const res = await request(app)
+      .post('/video/merge')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ videoIds: [-1, -2] })
+      .expect(400);
+
+    expect(res.body.code).toBe(400);
+    expect(res.body.message).toBe('Video not found ');
+  });
+
   test('Get Processed Video - GET /video/processed/:jobId', async () => {
     const res = await request(app)
-      .get(`/video/processed/${processedId}`) // Replace with actual job ID
+      .get(`/video/processed/${processedId}`)
       .set('Authorization', `Bearer ${token}`)
       .expect(200);
+  });
+
+  test('Get Processed Video - GET /video/processed/:jobId jobId does not exists', async () => {
+    const res = await request(app)
+      .get(`/video/processed/-1`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(500);
   });
 
   let processedId: number;
